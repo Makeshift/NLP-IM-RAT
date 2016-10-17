@@ -1,0 +1,23 @@
+{
+  "name": "nlp-im-rat",
+  "version": "0.0.1",
+  "description": "Natural Langue Parsing Instant Messaging Remote Administration Tool - Makeshift's LJMU Final Year Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Makeshift@github.com/Makeshift/NLP-IM-RAT.git"
+  },
+  "author": "Connor Bell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Makeshift/NLP-IM-RAT/issues"
+  },
+  "homepage": "https://github.com/Makeshift/NLP-IM-RAT#readme",
+  "dependencies": {
+    "botbuilder": "^3.2.3",
+    "restify": "^4.1.1"
+  }
+}

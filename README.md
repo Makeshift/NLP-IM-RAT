@@ -12,7 +12,7 @@ Because I was told I could, but also if I pretend that somebody is actually watc
 Doesn't that sound cool as hell?
 
 ## What is the title of the project?
-I can't remember. I apparently didn't write it down anywhere. I'll figure it out later.
+An Investigation into Network Monitoring with Natural Language Processing
 
 ## What will you be writing the tool/bot in?
 Likely Node.JS, though since I'm not technically being graded on my software development skills, it will likely not be as pretty as it could be.
