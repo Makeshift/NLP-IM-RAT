@@ -1,0 +1,13 @@
+How will u solve the problem to address challenge -  summary of problem analysis (single paragraphs)
+List high level aims and achieves
+(1.thorough literature review of topics)  3 of those
+Explain how aims address research challenge identified in problem analysis
+List specific objectives (what do I need to do, build implantation, test it, experiment, critical evaluation) 4-5
+Paragraph explaining how objectives satisfy aims
+
+[2:23]  
+Thanks for being a notepad
+
+[2:24]  
+Problem analysis -  single paragraph per section
+Maybe drop down into one table

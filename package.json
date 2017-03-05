@@ -1,7 +1,7 @@
 {
   "name": "nlp-im-rat",
   "version": "0.0.1",
-  "description": "Natural Langue Parsing Instant Messaging Remote Administration Tool - Makeshift's LJMU Final Year Project",
+  "description": "Natural Langue Parsing Instant Messaging Remote Administration Tool - Connor's LJMU Final Year Project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
