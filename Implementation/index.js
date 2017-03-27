@@ -2,9 +2,13 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var fs = require('fs');
 
+//Special setup file with all my hidden vars
+eval(fs.readFileSync('setup.js')+'');
+
 //=========================================================
 // Modules
 //=========================================================
+
 //Luis
 eval(fs.readFileSync('luis.js')+'');
 
@@ -20,8 +24,8 @@ server.listen(3978, function () { //Arbitrary port
   
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: "2484adc1-a7c3-4ce2-ad53-c428f20faa61",
-    appPassword: "HCydVsGO6pu46tqes51BZBh"
+    appId: appId,
+    appPassword: appPassword
 });
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
