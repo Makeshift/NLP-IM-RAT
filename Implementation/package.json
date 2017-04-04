@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Makeshift/NLP-IM-RAT#readme",
   "dependencies": {
     "botbuilder": "^3.2.3",
+    "ping": "^0.2.2",
     "restify": "^4.1.1"
   }
 }

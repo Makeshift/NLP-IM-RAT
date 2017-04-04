@@ -1,16 +1,20 @@
-var restify = require('restify');
-var builder = require('botbuilder');
-var fs = require('fs');
+//=========================================================
+// NLPIMRAT
+// Description: 
+/*
+    This file is the one you start to start the app. It contains all of the required includes for it to work,
+    as well as the initial bot setup and importing of all the modules.
+*/
+//=========================================================
+
+//Required includes
+var restify = require('restify'); //HTTP server
+var builder = require('botbuilder'); //Microsoft Botbuilder
+var fs = require('fs'); //Filesystem access
 
 //Special setup file with all my hidden vars
 eval(fs.readFileSync('setup.js')+'');
 
-//=========================================================
-// Modules
-//=========================================================
-
-//Luis
-eval(fs.readFileSync('luis.js')+'');
 
 //=========================================================
 // Bot Setup
@@ -21,48 +25,22 @@ var server = restify.createServer();
 server.listen(3978, function () { //Arbitrary port
    console.log('%s listening to %s', server.name, server.url); 
 });
-  
-// Create chat bot
-var connector = new builder.ChatConnector({
-    appId: appId,
-    appPassword: appPassword
-});
-var bot = new builder.UniversalBot(connector);
-server.post('/api/messages', connector.listen());
 
 //=========================================================
-// Bots Dialogs
+// Modules
+// Order must be: UIM Module, IMService Module then NLP Modules
 //=========================================================
 
-bot.dialog('/', dialog);
+//Technically this is not how you should import modules. Node.js is modular, and should be treated as such.
+//However, it is a simple way of doing it quickly that I'll improve upon properly if I have time.
 
-//Basic intents test
-dialog.matches('none', [
-    function (session, args) {
-        session.send("No intent detected.");
-    }
-]);
-
-dialog.matches('version', [
-    function (session, args) {
-    	var pjson = require('./package.json');
-        session.send("I am version " + pjson.version);
-    }
-]);
-
-dialog.matches('help', [
-    function (session, args) {
-        session.send("This is some helpful text.");
-    }
-]);
-
-dialog.matches('ping', [
-    function (session, args) {
-        // Resolve and store any entities passed from LUIS.
-        var arguments = builder.EntityRecognizer.findEntity(args.entities, 'arguments');
-        console.log(arguments);
-        session.send("You wish me to ping " + arguments.entity);
-    }
-]);
-
-dialog.onDefault(builder.DialogAction.send("I'm sorry I didn't understand. I only support 'ping' at the moment."));
+//User Interaction Module
+eval(fs.readFileSync('module-User_Interaction.js')+'');
+//IM Service Connector
+eval(fs.readFileSync('module-Telegram_Botbuilder.js')+'');
+//Natural Language Processing Connector
+eval(fs.readFileSync('module-LUIS_connector.js')+'');
+//Natural Langauge Processing Module
+eval(fs.readFileSync('module-LUIS_NLP.js')+'');
+//Intent Processing Module
+eval(fs.readFileSync('module-Intent_Processing.js')+'');

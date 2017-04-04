@@ -1,3 +1,11 @@
+//=========================================================
+// NLP Connector: LUIS_Connector
+// Description: 
+/*
+    This file sets up the connector to the LUIS NLP engine.
+*/
+//=========================================================
+
 //Azure endpoint
 var model = azureModel;
 //LUIS Module configuration
