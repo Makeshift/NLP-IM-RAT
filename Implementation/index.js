@@ -13,8 +13,7 @@ var builder = require('botbuilder'); //Microsoft Botbuilder
 var fs = require('fs'); //Filesystem access
 
 //Special setup file with all my hidden vars
-eval(fs.readFileSync('setup.js')+'');
-
+var setup = require('./setup.js');
 
 //=========================================================
 // Bot Setup
@@ -26,21 +25,37 @@ server.listen(3978, function () { //Arbitrary port
    console.log('%s listening to %s', server.name, server.url); 
 });
 
+// Create chat bot
+var connector = new builder.ChatConnector({
+    appId: setup.appId,
+    appPassword: setup.appPassword
+});
+var bot = new builder.UniversalBot(connector);
+//Opens up a post endpoint for the connector to listen on
+server.post('/api/messages', connector.listen());
 //=========================================================
 // Modules
 // Order must be: UIM Module, IMService Module then NLP Modules
 //=========================================================
 
 //Technically this is not how you should import modules. Node.js is modular, and should be treated as such.
-//However, it is a simple way of doing it quickly that I'll improve upon properly if I have time.
+//However, it is a simple way of doing it quickly that is also fairly user friendly for a client to do.
 
 //User Interaction Module
-eval(fs.readFileSync('module-User_Interaction.js')+'');
-//IM Service Connector
-eval(fs.readFileSync('module-Telegram_Botbuilder.js')+'');
+var mUI = require('./module-User_Interaction.js');
+
 //Natural Language Processing Connector
 eval(fs.readFileSync('module-LUIS_connector.js')+'');
 //Natural Langauge Processing Module
-eval(fs.readFileSync('module-LUIS_NLP.js')+'');
+    //LUIS Module configuration
+    var recognizer = new builder.LuisRecognizer(setup.azureModel);
+    //Takes over from the inbuilt parser to configure intents
+    var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
 //Intent Processing Module
 eval(fs.readFileSync('module-Intent_Processing.js')+'');
+//Server list
+var serverDefs = require('./servers.js');
+//Intermittent Server Query Module
+eval(fs.readFileSync('module-Intermittent_Query.js')+'');
+//Debug file
+eval(fs.readFileSync('test.js')+'');
