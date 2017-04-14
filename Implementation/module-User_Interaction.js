@@ -32,7 +32,16 @@ module.exports = {
 		//This handler is called if Luis detects the 'help' intent, such as "What am I doing?" or simply just "help".
 		//It replies with predefined help text.
 		help: function(arg, cb) {
-			var response = "This is some helpful text.";
+			var response = `Currently known intents  \n
+			Version: (what version are you, tell me your version, what is your version) Responds with current version  \n
+			Help: (help me, help, /start) Responds with this  \n
+			Ping: (ping address, can you ping address for me, please ping address) Tells you if a given endpoint is up  \n
+			Traceroute: (traceroute address, perform a traceroute against address, start traceroute to) Performs a traceroute against a given address  \n
+			SSH: (open ssh with address, open address, shell addresss, ssh address) Starts a dialog to get information, then opens a shell connection to a machine, returning the given text before exiting  \n
+			Identify: (identify, who am I) Sends identify information the bot knows about you, such as your user ID and IM service (Mostly for debugging)  \n
+			Logs: (get the aplication specific logs for server) Queries the known server list to get log data from a particular application on a server  \n
+			Associate: (associate x, associate me with x) Associates this conversation with a hardcoded intermittent query. You will then receive alerts from this query.
+			`;
 			cb(response);
 		},
 		//This handler is called if Luis detects the 'ping' intent, such as "is -server- up?, "is -server- online?" or "ping server".
