@@ -30,32 +30,34 @@ var connector = new builder.ChatConnector({
     appId: setup.appId,
     appPassword: setup.appPassword
 });
-var bot = new builder.UniversalBot(connector);
+bot = new builder.UniversalBot(connector);
 //Opens up a post endpoint for the connector to listen on
 server.post('/api/messages', connector.listen());
 //=========================================================
 // Modules
-// Order must be: UIM Module, IMService Module then NLP Modules
 //=========================================================
-
-//Technically this is not how you should import modules. Node.js is modular, and should be treated as such.
-//However, it is a simple way of doing it quickly that is also fairly user friendly for a client to do.
 
 //User Interaction Module
 var mUI = require('./module-User_Interaction.js');
-
-//Natural Language Processing Connector
-eval(fs.readFileSync('module-LUIS_connector.js')+'');
 //Natural Langauge Processing Module
-    //LUIS Module configuration
-    var recognizer = new builder.LuisRecognizer(setup.azureModel);
-    //Takes over from the inbuilt parser to configure intents
-    var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
+//LUIS Module configuration
+var recognizer = new builder.LuisRecognizer(setup.azureModel);
+//Takes over from the inbuilt parser to configure intents
+var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
+//Import the actual LUIS module as an eval for simplicity - There are so many references
+//to variables in other files it is a lot simpler to keep it as an eval rather than converting it into a module.
+eval(fs.readFileSync('module-LUIS_NLP.js')+'');
 //Intent Processing Module
-eval(fs.readFileSync('module-Intent_Processing.js')+'');
+var mIP = require('./module-Intent_Processing.js');
 //Server list
 var serverDefs = require('./servers.js');
 //Intermittent Server Query Module
-eval(fs.readFileSync('module-Intermittent_Query.js')+'');
-//Debug file
-eval(fs.readFileSync('test.js')+'');
+var mIQ = require('./module-Intermittent_Query.js');
+//Global timer for Intermittent Queries
+(function() {
+    for (var i = 0; i < mIQ.programmedQueries.length; i++) {
+        setInterval(function(x) {
+            mIQ.programmedQueries[x].run();
+        }, mIQ.programmedQueries[i].delay, i);
+    }
+}());

@@ -6,11 +6,13 @@
     other modules to make a response.
 */
 //=========================================================
+var mIP = require('./module-Intent_Processing.js');
+var serverDefs = require('./servers.js');
 module.exports = {
 	//List of known intents
 	//This allows us to have a static list of expected data even in the case that the NLP module changes
 	//This list does not include 'extended' intents, such as the +Convo modifier, which allows for multi-stage dialogs
-	knownIntents: ['none','version','help','ping','traceroute','ssh','identify','logs'],
+	knownIntents: ['none','version','help','ping','traceroute','ssh','identify','logs','associate'],
 
 	//Handling of each intent, NLP module agnostic
 	intentHandler: {
@@ -38,15 +40,15 @@ module.exports = {
 		//and acts as middleware between the LUIS and proccessing modules.
 		ping: function(arg, cb) {
 			console.log(arg);
-			process.ping(arg.arguments.value.replace(/\s/g, ""), function(response){
+			mIP.process.ping(arg.arguments.replace(/\s/g, ""), function(response){
 				cb(response);
 			});
 		},
-		//This handler is called if Luis detects the 'traceroute' intent, and only really understands "traceroute -server-".
+		//This handler is called if Luis detects the 'traceroute' intent, and responds to 'traceroute server', 'trace a route to x server' or similar
 		//Similarly, it defers processing to the processing module after sanitizing input.
 		traceroute: function(arg, cb) {
 			console.log(arg);
-			process.traceroute(arg.arguments.value.replace(/\s/g, ""), function(response) {
+			mIP.process.traceroute(arg.arguments.replace(/\s/g, ""), function(response) {
 				cb(response);
 			});
 		},
@@ -61,7 +63,7 @@ module.exports = {
 		//conversation handler to hand off to another handler, designed better for multi-message dialogue and response.
 		ssh: function(arg, cb) {
 			console.log(arg);
-			var address = arg.arguments.value.replace(/\s/g, "");
+			var address = arg.arguments.replace(/\s/g, "");
 			cb("Starting shell session with " + address, true, address);
 		},
 		//This handler is called by the previous SSH handler, and uses a counter system to loop through the conversation to get
@@ -69,6 +71,10 @@ module.exports = {
 		sshConvo: function(data, count, userID, cb) {
 			console.log("SSHCONVO: " + count);
 			console.log("USERID: " + userID);
+			//Each time sshConvo is called it cycles to the next counter
+			//This is a proof of concept to prove that a multi-layered dialog plus waiting for callbacks can work
+			//However it does not actually forward commands to the server, it simply exits when the text has
+			//finished buffering from the server
 			if (count == 0) {
 				cb("prompt", "Using what username?");
 			} else if (count == 1) {
@@ -77,7 +83,7 @@ module.exports = {
 				cb("prompt", "On what port?");
 			} else if (count == 3) {
 				cb("text", `Connecting to ${data[0]} with user '${data[1]}' and your specified password on port ${data[3]}...`);
-				process.ssh(data, userID, function(response) {
+				mIP.process.ssh(data, userID, function(response) {
 					cb("text", response);
 					cb("text", "Connected. Further commands will be forwarded to the server. Type 'exit' to exit session.", true);
 				});
@@ -91,7 +97,8 @@ module.exports = {
 		//message and works out exactly what the user is trying to do, before passing it off to intent processing.
 		logs: function(arg, cb, session) {
 			try {
-				process.getFile({
+				//Generate the getFile object so we don't have to deal with it later
+				mIP.process.getFile({
 					protocol: serverDefs.servers[arg.server].protocol,
 					address: serverDefs.servers[arg.server].address,
 					port: serverDefs.servers[arg.server].port,
@@ -100,13 +107,22 @@ module.exports = {
 					file: serverDefs.servers[arg.server].logs[arg.application][arg.arguments],
 					userid: session.message.user.id
 				}, function(line) {
-					//Callbacks yo
+					//Call back with the lines to inform the user
 					cb(line);
 				});
 			} catch (e) {
+				//Try/catch to try and grab any specific errors - The big one being an undefined when looking for a server that doesn't exist
+				//So let's tell the user about it and see if they can fix their syntax.
 				console.log(e);
 				cb(`We weren't able to find the correct path for the specified server. Here's what we got from your message:  \nServer: ${arg.server}  \nApplication: ${arg.application}  \nSubsection: ${arg.arguments}`)
 			}
+		},
+		//This handler is called if Luis detects the 'associate' intent. Such as 'associate me with x' or 'associate x'. This sends
+		//the argument and session off to the intent processor.
+		associate: function(args, cb, session) {
+			mIP.process.associate(args.arguments, session, function(response) {
+				cb(response);
+			});
 		}
 	}
 };
