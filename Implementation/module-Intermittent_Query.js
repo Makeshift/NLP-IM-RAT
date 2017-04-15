@@ -22,7 +22,6 @@ module.exports = {
 			type: 'logs',
 			application: 'system',
 			logfile: 'auth',
-			informUsers: {},
 			delay: 60000, //Time in milliseconds between checks of this file
 			format: function(text) { //Formats the data and only gets data we are interested in
 				var whitelist = setup.whitelist; //List of IP addresses that are whitelisted and we don't want notices about failing
