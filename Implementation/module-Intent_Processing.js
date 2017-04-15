@@ -136,7 +136,6 @@ module.exports = {
             } else {
                 cb(data + " doesn't exist as a programmed query.")
             }
-            //setup.globalAssociateVar.push
         }
     },
 }
