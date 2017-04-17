@@ -31,7 +31,7 @@ module.exports = {
 					//Adds 'accepted login' from our whitelisted IP's to be on the blacklist so we don't spam the user with successful logins from the application
 					blacklist.push('Accepted password.*'+whitelist[i])
 				}
-				var lineText = text.split(/(?=[A-Z][a-z][a-z] \d\d \d\d:\d\d:\d\d)/g); //Regex that splits text based on what we know is on each line - The date stamp
+				var lineText = text.split(/(?=[A-Z][a-z][a-z] \d\d \d\d:\d\d:\d\d)/g); //Regex that splits text based on what we know is on each line - The date stamp. Uses a negative lookahead to not accidentally remove that data.
 				var finalText = "";
 				for (var i = 0; i < lineText.length; i++) {
 					if (!new RegExp(blacklist.join("|")).test(lineText[i])) { //Little REGEX generator snippet
