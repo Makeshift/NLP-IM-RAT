@@ -129,6 +129,7 @@ module.exports = {
 		//This handler is called if Luis detects the 'associate' intent. Such as 'associate me with x' or 'associate x'. This sends
 		//the argument and session off to the intent processor.
 		associate: function(args, cb, session) {
+			console.log(args);
 			mIP.process.associate(args.arguments, session, function(response) {
 				cb(response);
 			});
