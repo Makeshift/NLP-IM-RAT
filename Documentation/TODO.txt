@@ -3,5 +3,9 @@ Abstract
 
 Lit reviews intro
 
+Rewrite critical analysis?
+
+Check for all 'TODO' and 'REF'
+
 Further Work
 Conclusions
